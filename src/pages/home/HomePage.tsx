@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { StyleSheet, View } from "react-native";
+import NewRunPage from "../newRun/NewRunPage";
 import PreviousSection from "./PreviousSection";
 
 type Props = {};
@@ -7,7 +8,9 @@ type Props = {};
 const HomePage = (props: Props) => {
   return (
     <View>
-      <PreviousSection />
+      {/* <PreviousSection /> */}
+
+      <NewRunPage />
     </View>
   );
 };
