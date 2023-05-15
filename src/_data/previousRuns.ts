@@ -1,4 +1,4 @@
-import { TDate } from "../../types";
+import { TDate } from "../types";
 import { User } from "./users";
 
 // Distance is in miles, speed is in miles per hour
