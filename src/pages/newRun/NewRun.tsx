@@ -1,22 +1,25 @@
-import React, { useContext, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 
 import { Camera, CameraType } from "expo-camera";
+
 import Icon from "../../components/Icon";
 import { DEVICE_HEIGHT, DEVICE_WIDTH } from "../../constants/deviceInfo";
 
 import { Store } from "../../../App";
 import { BALL_ICONS } from "../../constants/ballIcons";
 
-const MAX_TIMER_SECONDS = 15;
+import { ResizeMode, Video } from "expo-av";
+import formatToTime from "../../helpers/formatToTime";
+
 const NewRun = () => {
   const [permission, requestionPermission] = Camera.useCameraPermissions();
-
-  const [timer, setTimer] = useState(0);
   const [cameraType, setCameraType] = useState(CameraType.front);
 
-  const timerUp = () => setTimer((prev) => Math.min(prev + 1, MAX_TIMER_SECONDS));
-  const timerDown = () => setTimer((prev) => Math.max(prev - 1, 0));
+  const [cameraRef, setCameraRef] = useState<Camera | null>(null);
+  const [videoUri, setVideoUri] = useState<string | null>(null);
+
+  const [timer, setTimer] = useState(0);
 
   const { ballType } = useContext(Store);
   const ballIcon = BALL_ICONS[ballType];
@@ -28,49 +31,165 @@ const NewRun = () => {
     console.log("Help page navigation not implemented");
   };
 
-  const startCamera = () => {
-    setRecording(true);
+  const [showVideo, setShowVideo] = useState(false);
+
+  const handleRecordButtonPress = () => {
+    console.log("Record button pressed");
+    setRecording((alreadyRecording) => {
+      if (alreadyRecording) {
+        stopRecording();
+        return false;
+      }
+
+      // Start recording
+      else {
+        startRecording();
+        return true;
+      }
+    });
   };
 
+  const startRecording = async () => {
+    if (!cameraRef) {
+      setRecording(false);
+      console.error("Camera ref not set");
+      return;
+    }
+
+    try {
+      const { uri } = await cameraRef.recordAsync();
+      setVideoUri(uri);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const stopRecording = () => {
+    if (!cameraRef) {
+      console.error("Camera ref not set");
+      return;
+    }
+
+    cameraRef.stopRecording();
+    setShowVideo(true);
+  };
+
+  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
+  useEffect(() => {
+    if (recording) setTimerInterval(setInterval(() => setTimer((prev) => prev + 1), 1000));
+    else {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        setTimerInterval(null);
+      }
+    }
+
+    return () => {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        setTimerInterval(null);
+      }
+    };
+  }, [recording]);
+
+  // Change from back or front camera
   const toggleCameraType = () => setCameraType((prev) => (prev === CameraType.back ? CameraType.front : CameraType.back));
+  const videoRef = useRef<Video>(null);
 
   return (
-    <View style={styles.container}>
-      {permission ? (
-        <TouchableWithoutFeedback onPress={startCamera}>
-          <Camera style={styles.camera} type={cameraType} />
-        </TouchableWithoutFeedback>
-      ) : (
-        <Text>No access to camera</Text>
-      )}
+    <>
+      {!showVideo ? (
+        <View style={styles.container}>
+          {permission ? (
+            <TouchableWithoutFeedback onPress={handleRecordButtonPress}>
+              <Camera style={styles.camera} type={cameraType} ref={(ref) => setCameraRef(ref)} />
+            </TouchableWithoutFeedback>
+          ) : (
+            <Text>No access to camera</Text>
+          )}
 
-      <View style={styles.sideBarWrapper}>
-        <View style={styles.sideBar}>
-          <TouchableOpacity onPress={toggleCameraType}>
-            <Icon name="arrow-repeat" size={32} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={navigatToHelpPage}>
-            <Icon name="question-mark" size={32} />
-          </TouchableOpacity>
+          <View style={styles.sideBarWrapper}>
+            <View style={styles.sideBar}>
+              <TouchableOpacity onPress={toggleCameraType}>
+                <Icon name="arrow-repeat" size={32} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={navigatToHelpPage}>
+                <Icon name="question-mark" size={32} />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={[styles.timer, { backgroundColor: recording ? "rgba(255, 0, 0, 0.8)" : "rgba(0, 0, 0, 0.5)" }]}>
+            <Text style={styles.timerText}>{formatToTime(timer)}</Text>
+          </View>
+
+          <Text style={styles.ballOutline}>{ballIcon}</Text>
         </View>
-      </View>
-
-      <Text style={styles.ballOutline}>{ballIcon}</Text>
-    </View>
+      ) : (
+        // prettier-ignore
+        <ScrollView>
+          <View style={styles.videoWrapper}>
+            <Text>Video:</Text>
+            <Video
+              ref={videoRef}
+              style={styles.video}
+              source={{ uri: videoUri! }}
+              resizeMode={ResizeMode.COVER}
+              useNativeControls
+              isLooping
+            />
+          </View>
+        </ScrollView>
+      )}
+    </>
   );
 };
 
 export default NewRun;
 
 const ballOutlineSize = 50;
+const videoPlayerWidth = Math.min(DEVICE_WIDTH * 0.75, 250);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: DEVICE_WIDTH,
   },
 
+  timer: {
+    position: "absolute",
+    top: 75,
+    left: DEVICE_WIDTH / 2 - 50,
+    right: DEVICE_WIDTH / 2 - 50,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+
+  timerText: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 18,
+    padding: 10,
+  },
+
   camera: {
     flex: 1,
+  },
+
+  videoWrapper: {
+    justifyContent: "center",
+    alignItems: "center",
+
+    marginTop: 100,
+  },
+
+  video: {
+    flex: 1,
+
+    width: videoPlayerWidth,
+    height: videoPlayerWidth * (DEVICE_HEIGHT / DEVICE_WIDTH),
   },
 
   ballOutline: {
@@ -79,7 +198,6 @@ const styles = StyleSheet.create({
     bottom: 50,
     left: DEVICE_WIDTH / 2 - ballOutlineSize / 2,
     opacity: 0.7,
-    // borderRadius: 50,
   },
 
   textView: {
