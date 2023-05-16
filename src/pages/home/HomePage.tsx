@@ -9,7 +9,6 @@ const HomePage = (props: Props) => {
   return (
     <View>
       {/* <PreviousSection /> */}
-
       <NewRunPage />
     </View>
   );

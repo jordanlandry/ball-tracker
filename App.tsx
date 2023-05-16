@@ -2,17 +2,19 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import HomePage from "./src/pages/home/HomePage";
 import { Dispatch, SetStateAction, createContext, useState } from "react";
-import { TLanguage, TUnitDistance, TUnitSpeed } from "./src/types";
+import { BallType, TLanguage, TUnitDistance, TUnitSpeed } from "./src/types";
 
 type TStore = {
   speedUnit: TUnitSpeed;
   distanceUnit: TUnitDistance;
   language: TLanguage;
+  ballType: BallType;
 
   // Setters
   setSpeedUnit: Dispatch<SetStateAction<TUnitSpeed>>;
   setDistanceUnit: Dispatch<SetStateAction<TUnitDistance>>;
   setLanguage: Dispatch<SetStateAction<TLanguage>>;
+  setBallType: Dispatch<SetStateAction<BallType>>;
 };
 
 export const Store = createContext<TStore>({} as TStore);
@@ -23,7 +25,9 @@ export default function App() {
   const [distanceUnit, setDistanceUnit] = useState<TUnitDistance>("feet");
   const [language, setLanguage] = useState<TLanguage>("en");
 
-  const store = { speedUnit, setSpeedUnit, distanceUnit, setDistanceUnit, language, setLanguage };
+  const [ballType, setBallType] = useState<BallType>("soccer-ball");
+
+  const store = { speedUnit, setSpeedUnit, distanceUnit, setDistanceUnit, language, setLanguage, ballType, setBallType };
 
   return (
     <Store.Provider value={store}>
