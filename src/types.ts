@@ -21,5 +21,4 @@ export type TMonth =
 export type TUnitSpeed = "mph" | "km/h";
 export type TUnitDistance = "meters" | "feet" | "yards";
 export type TLanguage = "en" | "es" | "fr";
-
 export type BallType = "baseball" | "softball" | "tennis-ball" | "soccer-ball";

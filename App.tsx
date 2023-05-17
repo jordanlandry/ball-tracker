@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import HomePage from "./src/pages/home/HomePage";
 import { Dispatch, SetStateAction, createContext, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import HomePage from "./src/pages/home/HomePage";
 import { BallType, TLanguage, TUnitDistance, TUnitSpeed } from "./src/types";
 
 type TStore = {

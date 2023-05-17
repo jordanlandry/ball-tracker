@@ -31,6 +31,7 @@
           "cameraPermission": "Allow ${PRODUCT_NAME) to access your camera."
         }
       ]
-    ]
+    ],
+    "jsEngine": "jsc"
   }
 }

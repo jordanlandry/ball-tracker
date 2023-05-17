@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 
 import { Camera, CameraType } from "expo-camera";
 
@@ -9,7 +9,7 @@ import { DEVICE_HEIGHT, DEVICE_WIDTH } from "../../constants/deviceInfo";
 import { Store } from "../../../App";
 import { BALL_ICONS } from "../../constants/ballIcons";
 
-import { ResizeMode, Video } from "expo-av";
+import Test from "../../components/Test";
 import formatToTime from "../../helpers/formatToTime";
 
 const NewRun = () => {
@@ -34,7 +34,6 @@ const NewRun = () => {
   const [showVideo, setShowVideo] = useState(false);
 
   const handleRecordButtonPress = () => {
-    console.log("Record button pressed");
     setRecording((alreadyRecording) => {
       if (alreadyRecording) {
         stopRecording();
@@ -94,7 +93,6 @@ const NewRun = () => {
 
   // Change from back or front camera
   const toggleCameraType = () => setCameraType((prev) => (prev === CameraType.back ? CameraType.front : CameraType.back));
-  const videoRef = useRef<Video>(null);
 
   return (
     <>
@@ -126,20 +124,7 @@ const NewRun = () => {
           <Text style={styles.ballOutline}>{ballIcon}</Text>
         </View>
       ) : (
-        // prettier-ignore
-        <ScrollView>
-          <View style={styles.videoWrapper}>
-            <Text>Video:</Text>
-            <Video
-              ref={videoRef}
-              style={styles.video}
-              source={{ uri: videoUri! }}
-              resizeMode={ResizeMode.COVER}
-              useNativeControls
-              isLooping
-            />
-          </View>
-        </ScrollView>
+        <Test videoUri={videoUri!} />
       )}
     </>
   );
@@ -148,7 +133,6 @@ const NewRun = () => {
 export default NewRun;
 
 const ballOutlineSize = 50;
-const videoPlayerWidth = Math.min(DEVICE_WIDTH * 0.75, 250);
 
 const styles = StyleSheet.create({
   container: {
@@ -176,20 +160,6 @@ const styles = StyleSheet.create({
 
   camera: {
     flex: 1,
-  },
-
-  videoWrapper: {
-    justifyContent: "center",
-    alignItems: "center",
-
-    marginTop: 100,
-  },
-
-  video: {
-    flex: 1,
-
-    width: videoPlayerWidth,
-    height: videoPlayerWidth * (DEVICE_HEIGHT / DEVICE_WIDTH),
   },
 
   ballOutline: {
