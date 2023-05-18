@@ -13,7 +13,7 @@ import Test from "../../components/Test";
 import formatToTime from "../../helpers/formatToTime";
 
 const NewRun = () => {
-  const [permission, requestionPermission] = Camera.useCameraPermissions();
+  const [permission] = Camera.useCameraPermissions();
   const [cameraType, setCameraType] = useState(CameraType.front);
 
   const [cameraRef, setCameraRef] = useState<Camera | null>(null);
@@ -133,7 +133,6 @@ const NewRun = () => {
 export default NewRun;
 
 const ballOutlineSize = 50;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -194,13 +193,11 @@ const styles = StyleSheet.create({
   sideBarWrapper: {
     backgroundColor: "transparent",
     position: "absolute",
-    right: 0,
+    alignItems: "center",
+    right: 10,
+    top: 50,
     width: 50,
     height: DEVICE_HEIGHT,
-
-    top: 50,
-
-    alignItems: "center",
   },
 
   timerMenu: {

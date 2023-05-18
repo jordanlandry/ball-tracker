@@ -18,7 +18,7 @@ export type TMonth =
   | "november"
   | "december";
 
-export type TUnitSpeed = "mph" | "km/h";
+export type TUnitSpeed = "mph" | "km/h" | "m/s";
 export type TUnitDistance = "meters" | "feet" | "yards";
 export type TLanguage = "en" | "es" | "fr";
 export type BallType = "baseball" | "softball" | "tennis-ball" | "soccer-ball";

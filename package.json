@@ -22,6 +22,7 @@
     "expo-file-system": "~15.2.2",
     "expo-gl": "^12.4.0",
     "expo-gl-cpp": "^11.4.0",
+    "expo-image-picker": "~14.1.1",
     "expo-permissions": "^14.1.1",
     "expo-status-bar": "~1.4.4",
     "expo-video-thumbnails": "^7.2.1",
@@ -32,11 +33,13 @@
     "react-native-fs": "^2.20.0",
     "react-native-image-crop-picker": "^0.39.0",
     "react-native-picker-select": "^8.0.4",
+    "react-native-ssl-pinning": "^1.5.7",
     "react-native-svg": "13.4.0",
     "react-native-tensorflow": "^0.1.8",
     "react-native-video": "^5.2.1",
     "react-native-web": "~0.18.10",
-    "react-native-webview": "11.26.0"
+    "react-native-webview": "11.26.0",
+    "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
