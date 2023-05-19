@@ -54,19 +54,19 @@ export default function App() {
   };
 
   // Load the coco-ssd model
-  useEffect(() => {
-    // This function for some reason needs to be called in order for the model to work even though it's not used
-    cameraWithTensors(Camera); // Removing this line crashes the model
+  // useEffect(() => {
+  //   // This function for some reason needs to be called in order for the model to work even though it's not used
+  //   cameraWithTensors(Camera); // Removing this line crashes the model
 
-    const load = async () => {
-      await tf.ready();
-      const model = await cocoSsd.load();
-      console.log("Model loaded");
-      setModel(model);
-    };
+  //   const load = async () => {
+  //     await tf.ready();
+  //     const model = await cocoSsd.load();
+  //     console.log("Model loaded");
+  //     setModel(model);
+  //   };
 
-    load();
-  }, []);
+  //   load();
+  // }, []);
 
   return (
     <Store.Provider value={store}>

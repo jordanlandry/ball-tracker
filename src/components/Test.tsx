@@ -21,6 +21,10 @@ const Test = ({ videoUri }: Props) => {
     setImage(uri);
   };
 
+  const [positionMillis, setPositionMillis] = useState(1000);
+
+  useEffect(() => {}, [positionMillis]);
+
   const [predictions, setPredictions] = useState<any>([]);
 
   const { model } = useContext(Store);

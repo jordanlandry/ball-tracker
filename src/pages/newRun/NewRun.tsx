@@ -9,12 +9,13 @@ import { DEVICE_HEIGHT, DEVICE_WIDTH } from "../../constants/deviceInfo";
 import { Store } from "../../../App";
 import { BALL_ICONS } from "../../constants/ballIcons";
 
-import Test from "../../components/Test";
+import Test1 from "../../components/Test1";
 import formatToTime from "../../helpers/formatToTime";
 
 const NewRun = () => {
-  const [permission] = Camera.useCameraPermissions();
   const [cameraType, setCameraType] = useState(CameraType.front);
+
+  const [permission, requestPermission] = Camera.useCameraPermissions();
 
   const [cameraRef, setCameraRef] = useState<Camera | null>(null);
   const [videoUri, setVideoUri] = useState<string | null>(null);
@@ -26,6 +27,9 @@ const NewRun = () => {
 
   const [recording, setRecording] = useState(false);
 
+  const [startTime, setStartTime] = useState(0);
+  const [endTime, setEndTime] = useState(0);
+
   // TODO: Add a help page and navigation
   const navigatToHelpPage = () => {
     console.log("Help page navigation not implemented");
@@ -33,16 +37,22 @@ const NewRun = () => {
 
   const [showVideo, setShowVideo] = useState(false);
 
+  useEffect(() => {
+    requestPermission();
+  }, []);
+
   const handleRecordButtonPress = () => {
     setRecording((alreadyRecording) => {
       if (alreadyRecording) {
         stopRecording();
+        setEndTime(Date.now());
         return false;
       }
 
       // Start recording
       else {
         startRecording();
+        setStartTime(Date.now());
         return true;
       }
     });
@@ -93,12 +103,13 @@ const NewRun = () => {
 
   // Change from back or front camera
   const toggleCameraType = () => setCameraType((prev) => (prev === CameraType.back ? CameraType.front : CameraType.back));
+  const canUseCamera = permission && permission.status === "granted";
 
   return (
     <>
       {!showVideo ? (
         <View style={styles.container}>
-          {permission ? (
+          {canUseCamera ? (
             <TouchableWithoutFeedback onPress={handleRecordButtonPress}>
               <Camera style={styles.camera} type={cameraType} ref={(ref) => setCameraRef(ref)} />
             </TouchableWithoutFeedback>
@@ -124,7 +135,7 @@ const NewRun = () => {
           <Text style={styles.ballOutline}>{ballIcon}</Text>
         </View>
       ) : (
-        <Test videoUri={videoUri!} />
+        <Test1 videoUri={videoUri!} duration={endTime - startTime} />
       )}
     </>
   );
