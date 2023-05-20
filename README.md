@@ -31,12 +31,10 @@ the theoretical maximum values without the influence of wind. This feature allow
 providing valuable insights and enabling them to set goals and track progress in various wind conditions. By incorporating real-time weather data, the
 application enhances its functionality and provides users with a comprehensive analysis of their performance.
 
-Table of Contents
-
 ## Installation
 
 Note: This project is still in development and is not yet available on the App Store or Google Play Store. To run the app, you must have the Expo CLI
-installed. If you do not have it installed, run the following command:
+installed. Once you have it installed, run the following commands:
 
 ```bash
 git clone https://github.com/jordanlandry/ball-tracker.git
